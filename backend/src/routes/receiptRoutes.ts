@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Response } from "express";
 import mongoose from "mongoose"; // added
 import { generateReceiptPDF } from "../utils/pdfGenerator";
 import Booking from "../models/Booking";
@@ -8,7 +8,7 @@ const router = express.Router();
 
 // GET /api/receipts/:bookingId
 // Download receipt for a specific booking
-router.get("/:bookingId", async (req, res) => {
+router.get("/:bookingId", async (req, res: Response) => {
   try {
     const { bookingId } = req.params;
 
@@ -37,15 +37,15 @@ router.get("/:bookingId", async (req, res) => {
     const receiptData = {
       id: booking._id,
       name: booking.name,
-      email,
+      email: booking.email,
       sessions: booking.sessions,
-      premiumPlan: booking.premiumPlan,
+      premiumPlan: booking.premiumPlan ?? null, // fixed: ensure not undefined
       paymentMethod: booking.paymentMethod,
       totalAmount: booking.totalAmount,
       createdAt: booking.createdAt,
     };
 
-    const doc = generateReceiptPDF(receiptData);
+    const doc = generateReceiptPDF(receiptData, res);
     doc.pipe(res); // pipe now here
     doc.end();
   } catch (error) {
