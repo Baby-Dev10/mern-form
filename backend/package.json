@@ -1,5 +1,5 @@
 {
-  "name": "sessionflow-backend",
+  "name": "session",
   "version": "1.0.0",
   "description": "Backend for SessionFlow booking application",
   "main": "dist/index.js",
